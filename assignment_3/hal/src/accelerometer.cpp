@@ -16,6 +16,7 @@
 #define OUT_Y_LSB_REG 0x04
 #define OUT_Z_MSB_REG 0x05
 #define OUT_Z_LSB_REG 0x06
+#define BUFFER_SIZE 7
 #else
 #define I2C_ADDRESS 0x18
 #define CTRL_REG1 0x20
@@ -27,9 +28,9 @@
 #define OUT_Y_LSB_REG 0x2A
 #define OUT_Z_MSB_REG 0x2D
 #define OUT_Z_LSB_REG 0x2C
+#define BUFFER_SIZE 6
 #endif
 
-#define BUFFER_SIZE 7
 static const char* I2C_BUS = "/dev/i2c-1";
 
 void Accelerometer::init() {
@@ -44,9 +45,10 @@ void Accelerometer::init() {
 #else
     // On zencape red the ctrl register looks like this:
     // PM2 PM1 PM0 DR1 DR0 Zen Yen Xen
-    // Power is in PM2 - PM0 bits
-    // Active mode is 0b001 in PM2 - PM0 bits
-    IC2::writeRegister(i2cFileDesc, CTRL_REG1, 1 << 5);
+    //  0   0   1   0   0    1  1   1
+    // Set it to power mode 1, and enable Z, Y, and X
+    // Normal power mode is 0b001 in PM2 - PM0 bits
+    I2C::writeRegister(i2cFileDesc, CTRL_REG1, 0x27);
 #endif
 }
 
@@ -71,28 +73,34 @@ AccelerometerOutput Accelerometer::getValue() {
     that both bytes (LSB and MSB) belong to the same data sample, even if a
     new data sample arrives between reading the MSB and the LSB byte.
     */
-    I2C::readNRegisters(i2cFileDesc, REG_STATUS, buffer, BUFFER_SIZE);
 #ifndef ZENCAPE_RED
+    I2C::readNRegisters(i2cFileDesc, REG_STATUS, buffer, BUFFER_SIZE);
     unsigned char xMSB = buffer[1];
     unsigned char xLSB = buffer[2];
     unsigned char yMSB = buffer[3];
     unsigned char yLSB = buffer[4];
     unsigned char zMSB = buffer[5];
     unsigned char zLSB = buffer[6];
-
 #else
-    unsigned char xMSB = buffer[2];
-    unsigned char xLSB = buffer[1];
-    unsigned char yMSB = buffer[4];
-    unsigned char yLSB = buffer[3];
-    unsigned char zMSB = buffer[6];
-    unsigned char zLSB = buffer[5];
+    /*
+    Do a multi-byte I2C read, starting at the lowest address number, to read all the 
+    registers in one operation. To make this work, you must add 0x80 to the register 
+    address of your read. Doing so reads the same address as otherwise but enables the 
+    auto-increment feature on the device’s I2C address.
+    */
+    I2C::readNRegisters(i2cFileDesc, OUT_X_LSB_REG + 0x80, buffer, BUFFER_SIZE);
+    unsigned char xMSB = buffer[1];
+    unsigned char xLSB = buffer[0];
+    unsigned char yMSB = buffer[3];
+    unsigned char yLSB = buffer[2];
+    unsigned char zMSB = buffer[5];
+    unsigned char zLSB = buffer[4];
 #endif
-    // // Combine the MSB and LSB values to get the final value
+    // Combine the MSB and LSB values to get the final value
     short x = (xMSB << 8) | xLSB;
     short y = (yMSB << 8) | yLSB;
     short z = (zMSB << 8) | zLSB;
-
+    std::cout << "X: " << x << " Y: " << y << " Z: " << z << std::endl;
     return {x, y, z};
 }
 

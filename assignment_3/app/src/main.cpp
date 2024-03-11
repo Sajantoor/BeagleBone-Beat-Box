@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 
+#include <common/utils.hpp>
 #include "hal/accelerometer.hpp"
 #include "hal/joystick.hpp"
 #include "messageHandler.hpp"
@@ -14,6 +15,7 @@ int main(void) {
 
     while (!joystick.isButtonPressed()) {
         accelerometer.getValue();
+        sleepForMs(1000);
     }
 
     accelerometer.stop();
