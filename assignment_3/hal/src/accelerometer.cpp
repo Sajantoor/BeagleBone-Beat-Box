@@ -100,7 +100,6 @@ AccelerometerOutput Accelerometer::getValue() {
     short x = (xMSB << 8) | xLSB;
     short y = (yMSB << 8) | yLSB;
     short z = (zMSB << 8) | zLSB;
-    std::cout << "X: " << x << " Y: " << y << " Z: " << z << std::endl;
     return {x, y, z};
 }
 
