@@ -31,7 +31,15 @@
 #define BUFFER_SIZE 6
 #endif
 
+const int X_THRESHOLD = 10000;
+const int Y_THRESHOLD = 17000;
+// Z needs 2 thresholds because it's effected by gravity
+const int Z_THRESHOLD = 30000;
+const int Z_THRESHOLD_NEGATIVE = -1000;
+
 static const char* I2C_BUS = "/dev/i2c-1";
+
+Accelerometer::Accelerometer(Period* period) : period(period) {}
 
 void Accelerometer::init() {
     GPIO::configPin(P9, 17, "i2c");
@@ -52,7 +60,7 @@ void Accelerometer::init() {
 #endif
 }
 
-AccelerometerOutput Accelerometer::getValue() {
+AccelerometerValue Accelerometer::getValue() {
     // Read the X, Y, and Z values from the accelerometer
     // MSBs are 8 MSBs of the 12 bit sample, LSBs are the 4 LSBs of the 12 bit
     // sample
@@ -83,10 +91,10 @@ AccelerometerOutput Accelerometer::getValue() {
     unsigned char zLSB = buffer[6];
 #else
     /*
-    Do a multi-byte I2C read, starting at the lowest address number, to read all the 
-    registers in one operation. To make this work, you must add 0x80 to the register 
-    address of your read. Doing so reads the same address as otherwise but enables the 
-    auto-increment feature on the device’s I2C address.
+    Do a multi-byte I2C read, starting at the lowest address number, to read all
+    the registers in one operation. To make this work, you must add 0x80 to the
+    register address of your read. Doing so reads the same address as otherwise
+    but enables the auto-increment feature on the device’s I2C address.
     */
     I2C::readNRegisters(i2cFileDesc, OUT_X_LSB_REG + 0x80, buffer, BUFFER_SIZE);
     unsigned char xMSB = buffer[1];
@@ -100,6 +108,8 @@ AccelerometerOutput Accelerometer::getValue() {
     short x = (xMSB << 8) | xLSB;
     short y = (yMSB << 8) | yLSB;
     short z = (zMSB << 8) | zLSB;
+
+    period->markEvent(PERIOD_EVENT_ACCELEROMETER);
     return {x, y, z};
 }
 
@@ -110,4 +120,16 @@ void Accelerometer::stop() {
     GPIO::configPin(P9, 17, "gpio");
     GPIO::configPin(P9, 18, "gpio");
     close(i2cFileDesc);
+}
+
+bool Accelerometer::isDrasticChangeX(AccelerometerValue output) {
+    return output.x > X_THRESHOLD || output.x < -X_THRESHOLD;
+}
+
+bool Accelerometer::isDrasticChangeY(AccelerometerValue output) {
+    return output.y > Y_THRESHOLD || output.y < -Y_THRESHOLD;
+}
+
+bool Accelerometer::isDrasticChangeZ(AccelerometerValue output) {
+    return output.z > Z_THRESHOLD || output.z < Z_THRESHOLD_NEGATIVE;
 }

@@ -3,20 +3,27 @@
 
 // #define ZENCAPE_RED 1
 
+#include "hal/periodTimer.hpp"
+
 typedef struct {
     short x;
     short y;
     short z;
-} AccelerometerOutput;
+} AccelerometerValue;
 
 class Accelerometer {
    public:
+    Accelerometer(Period* period);
     void init();
     void stop();
-    AccelerometerOutput getValue();
+    AccelerometerValue getValue();
+    bool isDrasticChangeX(AccelerometerValue output);
+    bool isDrasticChangeY(AccelerometerValue output);
+    bool isDrasticChangeZ(AccelerometerValue output);
 
    private:
     int i2cFileDesc;
+    Period* period;
 };
 
 #endif

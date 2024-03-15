@@ -17,6 +17,7 @@ class GenerateBeat {
     WaveData baseDrumData;
     WaveData hiHatData;
     WaveData snareData;
+    Period period;
 
    public:
     GenerateBeat(AudioMixer* audioMixer);
@@ -34,14 +35,17 @@ class GenerateBeat {
     // default 120 BPM.
     void increaseTempo(void);
     void decreaseTempo(void);
+    unsigned int getTempo(void);
 
     // Control the beat's volume in range [0, 100] (inclusive); default 80.
     void increaseVolume(void);
     void decreaseVolume(void);
+    int getVolume(void);
 
     // Set beat
     void setBeatType(BEAT_TYPE beatType);
     void cycleBeatType(void);
+    BEAT_TYPE getBeatType(void);
 };
 
 #endif

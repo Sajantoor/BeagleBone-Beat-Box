@@ -10,7 +10,8 @@
 #define SAMPLE_SIZE (sizeof(short))  // bytes per sample
 #define AUDIOMIXER_MAX_VOLUME 100
 
-AudioMixer::AudioMixer() {
+AudioMixer::AudioMixer(Period* period) {
+    this->period = period;
     isRunning = false;
     volume = 0;
     playbackBufferSize = 0;
@@ -289,5 +290,7 @@ void AudioMixer::fillPlaybackBuffer(short* buff, int size) {
             soundBites[i].location = location;
         }
     }
+
     audioMutex.unlock();
+    period->markEvent(PERIOD_EVENT_AUDIO);
 }

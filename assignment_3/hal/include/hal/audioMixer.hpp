@@ -9,6 +9,8 @@
 #include <mutex>
 #include <thread>
 
+#include "hal/periodTimer.hpp"
+
 #define MAX_SOUND_BITES 30
 
 typedef struct {
@@ -38,9 +40,10 @@ class AudioMixer {
     short* playbackBuffer;
     void fillPlaybackBuffer(short* buff, int size);
     PlaybackSound soundBites[MAX_SOUND_BITES];
+    Period* period;
 
    public:
-    AudioMixer();
+    AudioMixer(Period* period);
     // init() must be called before any other functions,
     // stop() must be called last to stop playback threads and free memory.
     void init(void);

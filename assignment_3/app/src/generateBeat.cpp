@@ -1,9 +1,13 @@
 #include "generateBeat.hpp"
+
 #include <common/utils.hpp>
 
-static char BASE_DRUM_FILE[] = "beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav";
-static char HI_HAT_FILE[] = "beatbox-wav-files/100053__menegass__gui-drum-cc.wav";
-static char SNARE_FILE[] = "beatbox-wav-files/100059__menegass__gui-drum-snare-soft.wav";
+static char BASE_DRUM_FILE[] =
+    "beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav";
+static char HI_HAT_FILE[] =
+    "beatbox-wav-files/100053__menegass__gui-drum-cc.wav";
+static char SNARE_FILE[] =
+    "beatbox-wav-files/100059__menegass__gui-drum-snare-soft.wav";
 static constexpr unsigned int MAX_TEMPO = 300;
 static constexpr unsigned int MIN_TEMPO = 40;
 static constexpr long long DEFAULT_DELAY = 150;
@@ -81,17 +85,11 @@ void GenerateBeat::stop(void) {
     audioMixer->freeWaveFileData(&snareData);
 }
 
-void GenerateBeat::playSnare(void) {
-    audioMixer->queueSound(&snareData);
-}
+void GenerateBeat::playSnare(void) { audioMixer->queueSound(&snareData); }
 
-void GenerateBeat::playBaseDrum(void) {
-    audioMixer->queueSound(&baseDrumData);
-}
+void GenerateBeat::playBaseDrum(void) { audioMixer->queueSound(&baseDrumData); }
 
-void GenerateBeat::playHiHat(void) {
-    audioMixer->queueSound(&hiHatData);
-}
+void GenerateBeat::playHiHat(void) { audioMixer->queueSound(&hiHatData); }
 
 void GenerateBeat::increaseTempo(void) {
     if (bpm < MAX_TEMPO) {
@@ -105,6 +103,8 @@ void GenerateBeat::decreaseTempo(void) {
     }
 }
 
+unsigned int GenerateBeat::getTempo(void) { return bpm; }
+
 void GenerateBeat::increaseVolume(void) {
     audioMixer->setVolume(audioMixer->getVolume() + 5);
 }
@@ -113,6 +113,8 @@ void GenerateBeat::decreaseVolume(void) {
     audioMixer->setVolume(audioMixer->getVolume() - 5);
 }
 
+int GenerateBeat::getVolume(void) { return audioMixer->getVolume(); }
+
 void GenerateBeat::setBeatType(BEAT_TYPE beatType) {
     this->beatType = beatType;
 }
@@ -120,3 +122,5 @@ void GenerateBeat::setBeatType(BEAT_TYPE beatType) {
 void GenerateBeat::cycleBeatType(void) {
     this->beatType = static_cast<BEAT_TYPE>((this->beatType + 1) % NUM_BEATS);
 }
+
+BEAT_TYPE GenerateBeat::getBeatType(void) { return beatType; }
