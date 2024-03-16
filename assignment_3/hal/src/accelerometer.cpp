@@ -31,10 +31,10 @@
 #define BUFFER_SIZE 6
 #endif
 
-const int X_THRESHOLD = 10000;
-const int Y_THRESHOLD = 17000;
+const int X_THRESHOLD = 15000;
+const int Y_THRESHOLD = 15000;
 // Z needs 2 thresholds because it's effected by gravity
-const int Z_THRESHOLD = 30000;
+const int Z_THRESHOLD = 25000;
 const int Z_THRESHOLD_NEGATIVE = -1000;
 
 static const char* I2C_BUS = "/dev/i2c-1";

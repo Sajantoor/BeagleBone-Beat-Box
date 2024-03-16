@@ -4,7 +4,7 @@
 
 #include "common/utils.hpp"
 
-const int DEBOUNCE_TIME = 100;
+const int DEBOUNCE_TIME = 150;
 
 void AirDrum::init(void) {
     isRunning = true;
