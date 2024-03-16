@@ -26,7 +26,9 @@ int main(void) {
     AudioMixer audioMixer(&period);
     audioMixer.init();
 
-    GenerateBeat generateBeat(&audioMixer);
+    Socket socket;
+
+    GenerateBeat generateBeat(&audioMixer, &socket);
     generateBeat.init();
 
     Controller controller(&generateBeat, &joystick, &accelerometer);
@@ -35,9 +37,7 @@ int main(void) {
     AirDrum airDrum(&accelerometer, &generateBeat);
     airDrum.init();
 
-    TextOutput textOutput(&generateBeat, &period);
-
-    Socket socket;
+    TextOutput textOutput(&generateBeat, &period, &socket);
 
     Shutdown shutdown(&accelerometer, &audioMixer, &generateBeat, &controller,
                       &airDrum, &textOutput);

@@ -64,6 +64,11 @@ class Socket {
      */
     void stopRecieving(void);
 
+    /**
+     * Sends a message to the web server
+     */
+    void sendMessageToWebServer(std::string message);
+
    private:
     int socketFd;
     bool isRecieving;

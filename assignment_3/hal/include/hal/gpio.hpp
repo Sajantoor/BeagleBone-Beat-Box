@@ -6,8 +6,8 @@
 typedef enum { P8 = 8, P9 = 9 } headerType;
 
 /**
-Contains methods for interacting with the GPIO pins.
-*/
+ * Contains methods for interacting with the GPIO pins.
+ */
 class GPIO {
    public:
     static void exportPin(int pin);

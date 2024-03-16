@@ -29,6 +29,9 @@ typedef struct {
     int location;
 } PlaybackSound;
 
+/**
+ * This class is responsible for mixing and playing audio files in real time.
+ */
 class AudioMixer {
    private:
     bool isRunning;

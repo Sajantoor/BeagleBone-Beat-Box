@@ -79,3 +79,9 @@ void Socket::send(UdpMessage* message) {
 bool Socket::getIsRecieving(void) { return isRecieving; }
 
 void Socket::stopRecieving(void) { this->isRecieving = false; }
+
+void Socket::sendMessageToWebServer(std::string message) {
+    UdpMessage* udpMessage = new UdpMessage(message, "127.0.0.1", 7070);
+    this->send(udpMessage);
+    delete udpMessage;
+}

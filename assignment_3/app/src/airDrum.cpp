@@ -31,7 +31,7 @@ void AirDrum::init(void) {
             if (accelerometer->isDrasticChangeZ(value) &&
                 zActivatedTimer == 0) {
                 zActivatedTimer = DEBOUNCE_TIME;
-                generateBeat->playBaseDrum();
+                generateBeat->playBassDrum();
             }
 
             // for debouncing x, y, z

@@ -7,7 +7,9 @@
 #include "hal/accelerometer.hpp"
 #include "hal/joystick.hpp"
 
-// Generates a beat depending on the input from the joystick and accelerometer
+/**
+ * Generates a beat depending on the input from the joystick and accelerometer
+ */
 class Controller {
    private:
     bool isRunning;

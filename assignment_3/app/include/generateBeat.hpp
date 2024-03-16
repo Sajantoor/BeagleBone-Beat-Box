@@ -4,9 +4,14 @@
 #include <thread>
 
 #include "hal/audioMixer.hpp"
+#include "socket.hpp"
 
 typedef enum { NONE, ROCK_DRUM, CUSTOM, NUM_BEATS } BEAT_TYPE;
 
+/**
+ * Interface for handling the beat generation and updating the audio mixer,
+ * tempo, and volume. The beat generation is done in a separate thread.
+ */
 class GenerateBeat {
    private:
     bool isRunning;
@@ -17,10 +22,10 @@ class GenerateBeat {
     WaveData baseDrumData;
     WaveData hiHatData;
     WaveData snareData;
-    Period period;
+    Socket* socket;
 
    public:
-    GenerateBeat(AudioMixer* audioMixer);
+    GenerateBeat(AudioMixer* audioMixer, Socket* socket);
     // init() must be called before any other functions,
     // stop() must be called last to stop beat generation
     void init(void);
@@ -28,7 +33,7 @@ class GenerateBeat {
 
     // Play sound
     void playSnare(void);
-    void playBaseDrum(void);
+    void playBassDrum(void);
     void playHiHat(void);
 
     // Control the beat's tempo (in bpm) in range [40, 300] BPM (inclusive);

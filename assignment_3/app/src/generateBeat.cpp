@@ -12,11 +12,12 @@ static constexpr unsigned int MAX_TEMPO = 300;
 static constexpr unsigned int MIN_TEMPO = 40;
 static constexpr long long DEFAULT_DELAY = 150;
 
-GenerateBeat::GenerateBeat(AudioMixer* audioMixer) {
+GenerateBeat::GenerateBeat(AudioMixer* audioMixer, Socket* socket) {
     isRunning = false;
     beatType = ROCK_DRUM;  // Default to rock drum beat
     bpm = 120;             // Default to 120 beats per minute
     this->audioMixer = audioMixer;
+    this->socket = socket;
 }
 
 void GenerateBeat::init(void) {
@@ -87,7 +88,7 @@ void GenerateBeat::stop(void) {
 
 void GenerateBeat::playSnare(void) { audioMixer->queueSound(&snareData); }
 
-void GenerateBeat::playBaseDrum(void) { audioMixer->queueSound(&baseDrumData); }
+void GenerateBeat::playBassDrum(void) { audioMixer->queueSound(&baseDrumData); }
 
 void GenerateBeat::playHiHat(void) { audioMixer->queueSound(&hiHatData); }
 
@@ -95,32 +96,41 @@ void GenerateBeat::increaseTempo(void) {
     if (bpm < MAX_TEMPO) {
         bpm += 5;
     }
+
+    socket->sendMessageToWebServer("tempo " + std::to_string(getTempo()));
 }
 
 void GenerateBeat::decreaseTempo(void) {
     if (bpm > MIN_TEMPO) {
         bpm -= 5;
     }
+
+    socket->sendMessageToWebServer("tempo " + std::to_string(getTempo()));
 }
 
 unsigned int GenerateBeat::getTempo(void) { return bpm; }
 
 void GenerateBeat::increaseVolume(void) {
     audioMixer->setVolume(audioMixer->getVolume() + 5);
+
+    socket->sendMessageToWebServer("volume " + std::to_string(getVolume()));
 }
 
 void GenerateBeat::decreaseVolume(void) {
     audioMixer->setVolume(audioMixer->getVolume() - 5);
+
+    socket->sendMessageToWebServer("volume " + std::to_string(getVolume()));
 }
 
 int GenerateBeat::getVolume(void) { return audioMixer->getVolume(); }
 
 void GenerateBeat::setBeatType(BEAT_TYPE beatType) {
     this->beatType = beatType;
+    socket->sendMessageToWebServer("beatType " + std::to_string(getBeatType()));
 }
 
 void GenerateBeat::cycleBeatType(void) {
-    this->beatType = static_cast<BEAT_TYPE>((this->beatType + 1) % NUM_BEATS);
+    setBeatType(static_cast<BEAT_TYPE>((this->beatType + 1) % NUM_BEATS));
 }
 
 BEAT_TYPE GenerateBeat::getBeatType(void) { return beatType; }

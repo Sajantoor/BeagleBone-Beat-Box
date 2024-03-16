@@ -44,8 +44,8 @@ void MessageHandler::handlePlaySound(std::string sound) {
     // sounds are snare, baseDrum, hiHat
     if (sound == "snare") {
         generateBeat->playSnare();
-    } else if (sound == "baseDrum") {
-        generateBeat->playBaseDrum();
+    } else if (sound == "bassDrum") {
+        generateBeat->playBassDrum();
     } else if (sound == "hiHat") {
         generateBeat->playHiHat();
     } else {

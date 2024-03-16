@@ -4,6 +4,10 @@
 #include "generateBeat.hpp"
 #include "hal/accelerometer.hpp"
 
+/**
+ * Handles the air drumming functionality by reading the accelerometer data and
+ * adding the beat to the queue if the threshold is crossed.
+ */
 class AirDrum {
    public:
     // use the other style of constructor

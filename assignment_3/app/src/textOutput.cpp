@@ -37,15 +37,17 @@ Format: {sample number}:{value}
 static constexpr const int PRECISION = 3;
 static constexpr const int NUM_SAMPLES_TO_PRINT = 1;
 
-TextOutput::TextOutput(GenerateBeat* generateBeat, Period* period) {
+TextOutput::TextOutput(GenerateBeat* generateBeat, Period* period,
+                       Socket* socket) {
     this->beatGenerator = generateBeat;
     this->period = period;
+    this->socket = socket;
     start();
 }
 
 void TextOutput::start(void) {
     std::cout << "Starting to sample data..." << std::endl;
-    statisticsThread = std::thread([this] {
+    textoutputThread = std::thread([this] {
         while (this->isRunningOutput) {
             BEAT_TYPE mode = beatGenerator->getBeatType();
             unsigned int bpm = beatGenerator->getTempo();
@@ -72,6 +74,10 @@ void TextOutput::start(void) {
                       << accelStats.avgPeriodInMs << "/"
                       << accelStats.numSamples << std::endl;
 
+            socket->sendMessageToWebServer("all mode " + std::to_string(mode) +
+                                           " bpm " + std::to_string(bpm) +
+                                           " volume " + std::to_string(volume));
+
             std::cout << std::endl;
 
             sleepForMs(1000);
@@ -81,5 +87,5 @@ void TextOutput::start(void) {
 
 void TextOutput::stop(void) {
     this->isRunningOutput = false;
-    statisticsThread.join();
+    textoutputThread.join();
 }

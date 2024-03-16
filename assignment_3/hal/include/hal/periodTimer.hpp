@@ -46,9 +46,13 @@ typedef struct {
     long long prevTimestampInNs;
 } timestamps_t;
 
-// Initialize/cleanup the module's data structures.
+/**
+ * This class is responsible for recording and reporting the timing of periodic
+ * events.
+ */
 class Period {
    public:
+    // Initialize/cleanup the module's data structures.
     Period(void);
     void cleanup(void);
 

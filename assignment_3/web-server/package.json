@@ -1,0 +1,9 @@
+{
+	"name": "a3-webserver",
+	"version": "0.0.1",
+	"description": "Web Server for A3",
+	"dependencies": {
+		"socket.io": "~0.9.6",
+		"mime": "~1.2.7"
+	}
+}

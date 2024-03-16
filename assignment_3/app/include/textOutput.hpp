@@ -6,21 +6,22 @@
 #include "generateBeat.hpp"
 #include "hal/periodTimer.hpp"
 
-/*
-This module is responsible for printing the statistics of the sampler to the
-console.
-*/
+/**
+ * This class is responsible for printing the statistics of the sampler to the
+ * console.
+ */
 class TextOutput {
    private:
-    std::thread statisticsThread;
+    std::thread textoutputThread;
     bool isRunningOutput = true;
     void start(void);
 
     GenerateBeat* beatGenerator;
     Period* period;
+    Socket* socket;
 
    public:
-    TextOutput(GenerateBeat* generateBeat, Period* period);
+    TextOutput(GenerateBeat* generateBeat, Period* period, Socket* socket);
     void stop(void);
 };
 

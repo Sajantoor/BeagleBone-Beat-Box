@@ -9,10 +9,20 @@
 
 typedef enum { BUTTON, UP, DOWN, LEFT, RIGHT, NO_INPUT } JoystickDirection;
 
+/**
+ * This class is an interface to the joystick. Checks if the joystick is pressed
+ * and in which direction it is pressed.
+ */
 class JoyStick {
    public:
     void init();
+    /**
+     * Returns the direction the joystick is pressed in.
+     */
     JoystickDirection getDirection();
+    /**
+     * Returns true if the joystick is pressed.
+     */
     bool isButtonPressed();
 
    private:
