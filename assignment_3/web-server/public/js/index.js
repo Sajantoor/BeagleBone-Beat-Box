@@ -80,6 +80,9 @@ $(document).ready(() => {
 
 	socket.on("commandReply", function (result) {
 		hasReplied = true;
+		$("#error-box").hide();
+		clearTimeout(timer);
+
 		const command = result.split(" ")[0];
 		const argument = result.split(" ")[1];
 
@@ -105,7 +108,7 @@ $(document).ready(() => {
 		let minutes = Math.floor(seconds / 60);
 		let hours = Math.floor(minutes / 60);
 
-		hours = hours % 60;
+		minutes = minutes % 60;
 		seconds = seconds % 60;
 
 		if (fileName === "uptime") {
@@ -139,7 +142,6 @@ function sendCommandViaUDP(message) {
 
 function checkResponse() {
 	// reset the timer if called again
-	$("#error-box").hide();
 	clearTimeout(timer);
 
 	timer = setTimeout(() => {
@@ -148,8 +150,6 @@ function checkResponse() {
 				"The program is not running on the BeagleBone. Please check the program and try again.",
 				null
 			);
-		} else {
-			$("#error-box").hide();
 		}
 	}, 1000);
 }
