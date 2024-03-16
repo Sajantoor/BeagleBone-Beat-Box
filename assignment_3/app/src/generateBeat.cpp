@@ -1,6 +1,7 @@
 #include "generateBeat.hpp"
 
 #include <common/utils.hpp>
+#include <iostream>
 
 static char BASE_DRUM_FILE[] =
     "beatbox-wav-files/100051__menegass__gui-drum-bd-hard.wav";
@@ -95,6 +96,10 @@ void GenerateBeat::playHiHat(void) { audioMixer->queueSound(&hiHatData); }
 void GenerateBeat::increaseTempo(void) {
     if (bpm < MAX_TEMPO) {
         bpm += 5;
+    } else {
+        std::cout << "ERROR: Tempo cannot exceed " << MAX_TEMPO << " bpm"
+                  << std::endl;
+        return;
     }
 
     socket->sendMessageToWebServer("tempo " + std::to_string(getTempo()));
@@ -103,6 +108,10 @@ void GenerateBeat::increaseTempo(void) {
 void GenerateBeat::decreaseTempo(void) {
     if (bpm > MIN_TEMPO) {
         bpm -= 5;
+    } else {
+        std::cout << "ERROR: Tempo cannot be less than " << MIN_TEMPO << " bpm"
+                  << std::endl;
+        return;
     }
 
     socket->sendMessageToWebServer("tempo " + std::to_string(getTempo()));
